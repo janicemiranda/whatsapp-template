@@ -4,18 +4,63 @@
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="./css/styles.css">
 		<title>Document</title>
 	</head>
 	<body>
-		<header></header>
-		<main>
-			<button id="new-template" class="m-3 px-4 py-2 bg-green-500 text-white rounded">Add New Template</button>
+		<header class="m-3">
+      <h2 class="text-2xl text-emerald-800 pt-6 mx-4 p-2">WhatsApp Template Maker</h2>
+    </header>
+		<main class="grid md:grid-cols-2 gap-2 m-3">
+			<section class="bg-green-50 rounded m-3 border-green-500 border py-6 m-3">
+				<h2 class="text-2xl text-emerald-800 mx-4 p-2">Create Template</h2>
+        <form id="template-form" class="p-2 border-rounded mx-4">
+          <div class="mb-4">
+            <label for="name" class="block text-gray-700 text-sm font-bold mb-2">Title</label>
+            <input type="text" id="title" name="name" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700" required />
+          </div>
+          <div class="mb-4">
+            <label for="description" class="block text-gray-700 text-sm font-bold mb-2">Message</label>
+            <textarea id="message" name="description" rows="4" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"></textarea>
+          </div>
+          <div class="mb-4">
+            <label for="name" class="block text-gray-700 text-sm font-bold mb-2">Hashtags</label>
+            <input type="text" id="hashTag" name="name" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required />
+          </div>
+          <button id="new-template" type="button" class="px-4 py-2 my-2 bg-green-500 text-white rounded">Add New Template</button>
+			</section>
 			<section class="bg-green-50 rounded m-3 border-green-500 border">
-				<h2 class="text-2xl text-emerald-800 pt-6 mx-4 p-2">Templates</h2>
-				<ul id="templates-container" class="p-2 border-rounded grid sm:grid-cols-2 lg:grid-cols-3"></ul>
+        <div class="grid grid-cols-2" id="template-header">
+          <h2 class="text-2xl text-emerald-800 pt-8 mx-4 p-2">Templates</h2>
+          <div class="pt-8 mx-4 p-2 flex justify-end gap-2">
+            <!-- Edit button: always visible -->
+            <div id="deleteBar" class="hidden" px-4">
+              <button id="deleteSelectedBtn" class="bg-red-300 text-white px-4 py-2 rounded hover:bg-red-500">
+                ❌
+              </button>
+            </div>
+            
+            <button id="editTemplatesBtn" class="bg-blue-400 text-white px-4 py-2 rounded hover:bg-green-700">
+              Edit
+            </button>
+            <div class="hidden md:flex gap-2">
+              <button class="px-4 py-2 bg-green-500 text-white hover:bg-green-700 rounded" id="grid-view">
+                Grid
+              </button>
+              <button class="px-4 py-2 bg-green-500 text-white hover:bg-green-700 rounded" id="list-view">
+                List
+              </button>
+            </div>
+          </div>                 
+        </div>
+				<ul id="templates-container" class="p-2 border-rounded grid lg:grid-cols-2"></ul>
+        <div class="grid justify-items-center hidden" id="no-template">
+          <h3 class="text-xl text-emerald-800 pt-8 mx-4 p-2">You haven't created a template yet, get started!</h3>
+        </div>
 			</section>
 		</main>
 		<footer></footer>
+		<script src="./js/notification.js"></script>
 		<script src="./js/models/Template.js"></script>
 		<script src="./js/store.js"></script>
 		<script src="./js/perisistence.js"></script>

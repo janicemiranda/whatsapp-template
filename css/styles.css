@@ -1,0 +1,7 @@
+textarea,
+input {
+	background-color: white;
+}
+#editTemplatesBtn {
+	display: grid;
+}

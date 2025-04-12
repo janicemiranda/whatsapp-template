@@ -1,90 +1,79 @@
+// Create a simple state management store for templates
 function createStore(initialState = []) {
-	// Estado interno de la funcion
-	// variable privda
-	let state = initialState; // por defecto es un []
+	let state = initialState; // Initial state of the store (defaults to an empty array)
 
-	// arreglo de funciones que se ejecutan cuando el estado cambia
-	const listeners = [];
+	const listeners = []; // List of functions to call whenever the state updates
 
+	// Returns the current state
 	function getState() {
 		return state;
 	}
 
+	// Sets a new state and notifies all subscribed listeners
 	function setState(newState) {
 		state = newState;
 		listeners.forEach(function (listener) {
-			listener(state);
+			listener(state); // Notify each subscriber of the new state
 		});
 	}
 
+	// Adds a new template to the store and shows a success notification
 	function addTemplate(newTemplate) {
 		const newState = [...state, newTemplate];
 
-		setState(newState);
+		showNotification('success', 'Notificación Creada', 'Notificación creada correctamente');
+
+		setState(newState); // Update the state and notify subscribers
 	}
 
-	function suscribe(listener) {
-		listeners.push(listener);
+	// Allows functions to subscribe to state changes
+	function subscribe(listener) {
+		listeners.push(listener); // Add the listener to the array
 
+		// Return a function to unsubscribe later
 		return () => {
 			const index = listeners.indexOf(listener);
 			if (index > -1) {
-				listeners.splice(index, 1);
+				listeners.splice(index, 1); // Remove the listener from the array
 			}
 		};
 	}
 
+	// Loads templates from localStorage when the app initializes
 	function initializeStore() {
-		const newTemplates = [
-			new Template(
-				'Lost Pet Alert Message',
-				'Hey everyone, my [dog/cat/etc.], [Pet’s Name], is missing! Last seen near [Location] on [Date/Time]. If you spot [him/her], please contact me at [Your Number]. 🙏🐾',
-				'#LostPet #MissingDog #LostAndFoundPets #PetAlert',
-				'https://www.google.com',
-				'day'
-			),
-			new Template(
-				'Found Pet Alert Message',
-				'Hey everyone, I found a [dog/cat/etc.] near [Location] on [Date/Time]. [Brief description: color, size, collar, special markings]. If you recognize this pet, please contact me!',
-				'#FoundPet #LostAndFound #HelpFindOwner #FoundDog #FoundCat',
-				'https://www.google.com',
-				'day'
-			),
-			new Template(
-				'Pet Adoption Announcement',
-				'Hey friends! [Pet’s Name], a sweet [breed/species], is looking for a loving home. [He/She] is [age] old, [temperament], and fully [vaccinated/trained]. Let me know if you or someone you know is interested!',
-				'#PetAdoption #AdoptDontShop #RescuePet #LookingForAHome',
-				'https://www.google.com',
-				'2025-04-02'
-			),
-			new Template(
-				'Pet Birthday Invitation',
-				'🎉 It’s [Pet’s Name]’s birthday! 🎂🐾 Join us on [Date/Time] at [Location] for a fun celebration. There will be treats, games, and lots of tail wags! Let me know if you can make it!',
-				'#PetBirthday #DogParty #CatCelebration #PawtyTime',
-				'https://www.google.com',
-				'2025-04-02'
-			),
-			new Template(
-				'Pet Playdate Invitation',
-				'Hey pet parents! I’m planning a playdate for our furry friends at [Location] on [Date/Time]. Bring your [dog/cat/etc.] for some fun and socializing! Let me know if you’re interested!',
-				'#PetPlaydate #DogMeetup #CatFriends #FurryFun',
-				'https://www.google.com',
-				'2025-04-02'
-			),
-		];
+		const templates = localStorage.getItem('templates');
+		const newTemplates = templates === null ? [] : JSON.parse(templates);
 
-		setState(newTemplates);
+		// Reconstruct Template instances from plain objects
+		const mappedTemplates = newTemplates.map(function (newTemplate) {
+			return new Template(
+				newTemplate.title,
+				newTemplate.message,
+				newTemplate.hashTag,
+				newTemplate.link,
+				newTemplate.date
+			);
+		});
+
+		setState(mappedTemplates); // Set the reconstructed templates as the new state
+	}
+
+	// Deletes templates from the store using a list of IDs
+	function deleteTemplatesByIds(ids) {
+		state = state.filter((template) => !ids.includes(template.id)); // Keep only templates not in the provided list
+		setState(state); // Notify subscribers of the change
 	}
 
 	return {
 		getState,
 		setState,
 		addTemplate,
-		suscribe,
+		subscribe,
 		initializeStore,
+		deleteTemplatesByIds,
 	};
 }
 
+// Create the store instance and attach it to the global window object
 const templatesStore = createStore([]);
-
 window.templatesStore = templatesStore;
