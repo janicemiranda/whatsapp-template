@@ -5,5 +5,6 @@ class Template {
 		this.hashTag = hashtag;
 		this.link = link;
 		this.date = date;
+		this.id = crypto.randomUUID();
 	}
 }
